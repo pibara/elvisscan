@@ -6,6 +6,7 @@ from scapy.all import *
 import time
 import threading
 import json
+import datetime
 
 class HistoryElement:
   def __init__(self,ring,rset,moment):
@@ -25,55 +26,42 @@ class Client:
       self.outerset = set()
       self.middleset = set()
       self.history = list()
-      self.addhistory("inner",set(),time.time())
-      print "Keeping tabs on",self.mac
+      s = set()
+      s.add("home") 
+      self.addhistory("inner",s,time.time())
+      self.report("non","inner",s,time.time())
   def addhistory(self,ring,rset,moment):
       self.history.append(HistoryElement(ring,rset,moment))
       self.history=self.history[-10:]
   def report(self,oldring,ring,rset,moment):
-      print moment,self.mac,
+      dt = datetime.datetime.fromtimestamp(int(moment)).strftime('%Y-%m-%d %H:%M:%S')
+      print dt,self.mac,
       if ring != oldring:
           if oldring == "missing":
-              if ring == "inner":
-                  print "reapeared in the inner ring"
-              if ring == "middle":
-                  print "reapeared in the middle ring, aps=",list(rset)
-              if ring == "outer":
-                  print "reapeared in the outer ring, aps=",list(rset)
-          if oldring == "outer":
+              print " reapeared in the " + ring + " ring.",
+          else: 
               if ring == "missing":
-                  print "has disapeared from the outer ring."
-              if ring == "outer":
-                  print "has moved within the outer ring, aps=",list(rset)
-              if ring == "middle":
-                  print "has moved from the outer to the middle ring, aps=",list(rset)       
-              if ring == "inner":
-                  print "has moved from the outer to the inner ring."
-          if oldring == "middle":
-              if ring == "missing":
-                  print "has disapeared from the middle ring."
-              if ring == "outer":
-                  print "has moved from the outer to the middle ring, aps=",list(rset)
-              if ring == "middle":
-                  print "has moved within the middle ring, aps=",list(rset) 
-              if ring == "inner":
-                  print "has moved from the middle to the inner ring."
-          if oldring == "inner":
-              if ring == "missing":
-                  print "has disapeared from the inner ring."
-              if ring == "outer":
-                  print "has moved from the inner to the outer ring, aps=",list(rset)
-              if ring == "middle":
-                  print "has moved from the inner to the middle ring, aps=",list(rset) 
+                  print " not seen sinse 30 minutes",
+              else:
+                  print " went from ",oldring," to ",ring," ring.", 
+      else :
+          print "remains in ",ring," ring.",
+      if ring == "outer" or ring == "middle":
+         print "Access points :", list(rset),
+      print  
   def home(self):
       #Seen by own access point
       self.lastseen["home"]=time.time()
-      self.newring("inner",set(),time.time())
+      s = set()
+      s.add("home")
+      self.newring("inner",s,time.time())
   def mon(self):
       #Seen by monitor (us)
       self.lastseen["mon"]=time.time()
       if self.ring != "inner":
-          self.newring("middle",set(),time.time())
+          s = set()
+          s.add("mon")
+          self.newring("middle",s(),time.time())
       else:
           if self.reexamine == False or self.possible != "middle":
               self.reexamine = True
@@ -113,7 +101,7 @@ class Client:
               self.newring(newring,aplist,newest)
   def newring(self,ring,rset,moment):
       updated = False
-      self.oldring = ring
+      oldring = ring
       if ring != self.ring:
           self.ring = ring 
           updated = True
