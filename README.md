@@ -13,3 +13,15 @@ The script defines four rings:
 
 Elvisscan will output events on stdout and will create a fresh json file every five seconds. A simple cherypy script will
 parse the json and display a simple html version of the data.
+
+Elvisscan was developed on C.H.I.P device with an ALFA Network AWUS036NH as secondary WiFi device, but should in theory 
+run on other setups as well with minor alterations. ElvisScan expects an active wifi connection on the device named wlan0,
+and it expects a device named wlan1 to be evailable for usage in monitor mode. It is sugested that the device running
+ElvisScan should be placed in such a way as to maximize reception range for the monitor mode wifi device.
+
+Usage:
+
+    ./esserver.py
+    sudo ./elvisscan.py
+
+The server will run on port 8080 of your monitoring appliance.
