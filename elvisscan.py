@@ -61,7 +61,7 @@ class Client:
       if self.ring != "inner":
           s = set()
           s.add("mon")
-          self.newring("middle",s(),time.time())
+          self.newring("middle",s,time.time())
       else:
           if self.reexamine == False or self.possible != "middle":
               self.reexamine = True
