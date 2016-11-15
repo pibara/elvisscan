@@ -101,7 +101,7 @@ class Client:
               self.newring(newring,aplist,newest)
   def newring(self,ring,rset,moment):
       updated = False
-      oldring = ring
+      oldring = self.ring
       if ring != self.ring:
           self.ring = ring 
           updated = True
