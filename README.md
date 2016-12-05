@@ -25,3 +25,7 @@ Usage:
     sudo ./elvisscan.py
 
 The server will run on port 8080 of your monitoring appliance.
+
+## NOTE:
+
+There currently is a major but in elvisscan that makes it simply stop working after running for an amount of time ranging from a number of hours upto a little over a day. I've not yet been able to track down the bug that is causing this behaviour. If you happen to be a python expert with scapy/threading experience experience, I could really use some help on this one. Until this bug is fixed, ElvisScan should be considered seriously broken. 
